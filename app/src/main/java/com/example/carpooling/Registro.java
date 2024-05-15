@@ -1,17 +1,16 @@
 package com.example.carpooling;
 
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -20,7 +19,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -55,6 +53,7 @@ public class Registro extends AppCompatActivity {
         });
     }
     private class ConsultarDatos extends AsyncTask<String, Void, String> {
+        @RequiresApi(api = Build.VERSION_CODES.KITKAT)
         @Override
         protected String doInBackground(String... urls) {
             try {
@@ -87,6 +86,7 @@ public class Registro extends AppCompatActivity {
     //Clase que invoca el procedimiento para Inserción de datos en la Base de Datos
     //********************************************************************************
     private class CargarDatos extends AsyncTask<String, Void, String> {
+        @RequiresApi(api = Build.VERSION_CODES.KITKAT)
         @Override
         protected String doInBackground(String... urls) {
             // params comes from the execute() call: params[0] is the url.
@@ -102,6 +102,7 @@ public class Registro extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Los datos se guardaron éxitosamente", Toast.LENGTH_LONG).show();
         }
     }
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private String downloadUrl(String myurl) throws IOException {
         Log.i("URL",""+myurl);
         myurl = myurl.replace(" ","%20");
@@ -119,8 +120,7 @@ public class Registro extends AppCompatActivity {
             int response = conn.getResponseCode();
             Log.d("respuesta", "The response is: " + response);
             is = conn.getInputStream();
-            String contentAsString = readIt(is, len);
-            return contentAsString;
+            return readIt(is, len);
         } finally {
             if (is != null) {
                 is.close();
