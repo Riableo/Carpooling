@@ -1,8 +1,11 @@
 package com.example.carpooling;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -20,33 +23,35 @@ import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 public class Registro extends AppCompatActivity {
     EditText ide,career,nam,cel,apel,disca,pass;
-    Button bguardar;
+    Button bguardar, bVolver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registro);
 
-        ide=(EditText)findViewById(R.id.cod);
-        career=(EditText)findViewById(R.id.carrer);
-        nam=(EditText)findViewById(R.id.name);
-        cel=(EditText)findViewById(R.id.phone);
-        apel=(EditText)findViewById(R.id.lastname);
-        disca=(EditText)findViewById(R.id.discap);
-        pass=(EditText)findViewById(R.id.psswd);
-        bguardar=(Button)findViewById(R.id.regist);
+        ide=findViewById(R.id.cod);
+        career=findViewById(R.id.carrer);
+        nam=findViewById(R.id.name);
+        cel= findViewById(R.id.phone);
+        apel= findViewById(R.id.lastname);
+        disca= findViewById(R.id.discap);
+        pass= findViewById(R.id.psswd);
+        bguardar=findViewById(R.id.regist);
+        bVolver=findViewById(R.id.back);
 
 
-        bguardar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new
-                        Registro.CargarDatos().execute("http://10.0.2.2/carpool/registrar.php?Codigo="+ide.getText().toString()+"&Celular="+cel.getText().toString()+"&Nombre="+nam.getText().toString()+"&Apellido="+apel.getText().toString()+"&Cargo="+career.getText().toString()+"&Password="+pass.getText().toString()+"&Discapacidad="+disca.getText().toString());
+        bguardar.setOnClickListener(v -> new
+                CargarDatos().execute("http://10.0.2.2/carpool/registrar.php?Codigo="+ide.getText().toString()+"&Celular="+cel.getText().toString()+"&Nombre="+nam.getText().toString()+"&Apellido="+apel.getText().toString()+"&Cargo="+career.getText().toString()+"&Password="+pass.getText().toString()+"&Discapacidad="+disca.getText().toString()));
 
-            }
+        bVolver.setOnClickListener(v -> {
+            Intent i=new Intent(Registro.this, MainActivity.class);
+
+            startActivity(i);
         });
     }
     private class ConsultarDatos extends AsyncTask<String, Void, String> {
@@ -63,7 +68,7 @@ public class Registro extends AppCompatActivity {
         //************************************************************
         @Override
         protected void onPostExecute(String result) {
-            JSONArray ja = null;
+            JSONArray ja;
             try {
                 ja = new JSONArray(result);
                 ide.setText(ja.getString(0));
@@ -122,10 +127,10 @@ public class Registro extends AppCompatActivity {
             }
         }
     }
-    public String readIt(InputStream stream, int len) throws IOException,
-            UnsupportedEncodingException {
-        Reader reader = null;
-        reader = new InputStreamReader(stream, "UTF-8");
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    public String readIt(InputStream stream, int len) throws IOException {
+        Reader reader;
+        reader = new InputStreamReader(stream, StandardCharsets.UTF_8);
         char[] buffer = new char[len];
         reader.read(buffer);
         return new String(buffer);
